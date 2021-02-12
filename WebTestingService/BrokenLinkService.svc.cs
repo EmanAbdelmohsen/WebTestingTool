@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WebTesringService
+namespace WebTestingService
 {
     public class BrokenLinkService : IBrokenLinkService
     {

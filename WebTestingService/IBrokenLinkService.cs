@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ServiceModel;
+using System.ServiceModel.Web;
 
-namespace WebTesringService
+namespace WebTestingService
 {
     [ServiceContract]
     public interface IBrokenLinkService
