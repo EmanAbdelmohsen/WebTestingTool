@@ -10,13 +10,38 @@ namespace WebTestingService
     {
         public List<string> GetBorkenLinksFromUrl(string url)
         {
-            throw new NotImplementedException();
+            //get html document from given url
+            HtmlWeb hw = new HtmlWeb();
+            HtmlDocument doc = hw.Load(new Uri(url));
+
+            //1- fetch all links from html
+            var links = ExtractLinksFromHtmlDoc(doc);
+
+            //2- iterate on links to get the status
+            List<string> brokenLinks = new List<string>();
+
+            foreach (string link in links)
+            {
+                int status = GetStatusCodeFromHttpResponse(link);
+
+                //3- validate on status code to filter broken links
+                if (status >= 400)
+                {
+                    brokenLinks.Add(link);
+                }
+            }
+
+            return brokenLinks;
         }
 
         public List<string> GetBrokenLinksFromHtml(string htmlContent)
         {
+            //get html document from text
+            var doc = new HtmlDocument();
+            doc.LoadHtml(htmlContent);
+
             //1- fetch all links from html
-            var links = ExtractLinksFromHtml(htmlContent);
+            var links = ExtractLinksFromHtmlDoc(doc);
 
             //2- iterate on links to get the status
             List<string> brokenLinks = new List<string>();
@@ -38,15 +63,11 @@ namespace WebTestingService
         /// <summary>
         /// Gets all links from a given web page html source
         /// </summary>
-        /// <param name="html">html source code</param>
+        /// <param name="doc">html source document</param>
         /// <returns>list of links</returns>
-        List<string> ExtractLinksFromHtml(string html)
+        List<string> ExtractLinksFromHtmlDoc(HtmlDocument doc)
         {
             List<string> links = new List<string>();
-
-            //get html document from text
-            var doc = new HtmlDocument();
-            doc.LoadHtml(html);
 
             //fetch links nodes from the html document
             links = doc.DocumentNode
@@ -65,7 +86,15 @@ namespace WebTestingService
         int GetStatusCodeFromHttpResponse(string url)
         {
             //create http request out from the given url
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            HttpWebRequest request;
+            try
+            {
+                request = (HttpWebRequest)WebRequest.Create(url);
+            }
+            catch
+            {
+                return 404;
+            }
 
             HttpWebResponse response = null;
             HttpStatusCode statusCode;
