@@ -8,7 +8,7 @@ namespace WebTestingService
     //reference: https://www.c-sharpcorner.com/uploadfile/f9935e/invoking-a-web-service-dynamically-using-system-net-and-soap/
     public class SoapServiceClient
     {
-        public string Url { get; private set; }
+        public string Url { get; set; }
         public ServiceTypeEnum ServiceType { get; set; }
         public string ServiceMethod { get; set; }
         public List<MethodParameter> MethodParameters { get; set; }
@@ -36,11 +36,14 @@ namespace WebTestingService
             HttpWebRequest req = CreateWebRequest();
 
             //write the soap envelope to request stream
-            using (Stream stm = req.GetRequestStream())
+            if (req.Method == "POST")
             {
-                using (StreamWriter stmw = new StreamWriter(stm))
+                using (Stream stm = req.GetRequestStream())
                 {
-                    stmw.Write(CreateSoapEnvelope());
+                    using (StreamWriter stmw = new StreamWriter(stm))
+                    {
+                        stmw.Write(CreateSoapEnvelope());
+                    }
                 }
             }
 
@@ -50,7 +53,7 @@ namespace WebTestingService
             StreamReader sr = new StreamReader(str);
 
             strResponse = sr.ReadToEnd();
-            return strResponse; //this.StripResponse(HttpUtility.HtmlDecode(strResponse));
+            return strResponse;
         }
 
         /// <summary>
@@ -89,9 +92,10 @@ namespace WebTestingService
                 webRequest.Headers.Add("SOAPAction", "\"http://tempuri.org/" + ServiceMethod + "\"");
 
             webRequest.Headers.Add("To", Url);
-            webRequest.ContentType = "text/xml;charset=\"utf-8\"";
-            webRequest.Accept = "text/xml";
-            webRequest.Method = "POST";
+            webRequest.ContentType = "text/xml";
+            webRequest.Accept = "text/html,application/xhtml+xml,application/xml;";
+            webRequest.Method = "GET";
+
             return webRequest;
         }
     }
