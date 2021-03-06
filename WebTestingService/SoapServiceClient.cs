@@ -24,7 +24,7 @@ namespace WebTestingService
                                 <soap:Body></soap:Body></soap:Envelope>";
 
         /// <summary>
-        /// Makes service invocation for a certain method and gets response
+        /// Makes service synchronous invocation for a certain method and gets response
         /// </summary>
         /// <returns>http response</returns>
         public string InvokeService()
@@ -36,14 +36,11 @@ namespace WebTestingService
             HttpWebRequest req = CreateWebRequest();
 
             //write the soap envelope to request stream
-            if (req.Method == "POST")
+            using (Stream stm = req.GetRequestStream())
             {
-                using (Stream stm = req.GetRequestStream())
+                using (StreamWriter stmw = new StreamWriter(stm))
                 {
-                    using (StreamWriter stmw = new StreamWriter(stm))
-                    {
-                        stmw.Write(CreateSoapEnvelope());
-                    }
+                    stmw.Write(CreateSoapEnvelope());
                 }
             }
 
@@ -94,7 +91,7 @@ namespace WebTestingService
             webRequest.Headers.Add("To", Url);
             webRequest.ContentType = "text/xml";
             webRequest.Accept = "text/html,application/xhtml+xml,application/xml;";
-            webRequest.Method = "GET";
+            webRequest.Method = "POST";
 
             return webRequest;
         }
