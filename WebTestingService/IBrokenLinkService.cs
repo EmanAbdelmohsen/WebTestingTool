@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.ServiceModel;
-using System.ServiceModel.Web;
 
 namespace WebTestingService
 {
     [ServiceContract]
     public interface IBrokenLinkService
     {
+        [OperationContract]
+        //[WebGet]
+        string invoke(string url);
+
         [OperationContract]
         //[WebGet]
         List<string> GetBorkenLinksFromUrl(string url);

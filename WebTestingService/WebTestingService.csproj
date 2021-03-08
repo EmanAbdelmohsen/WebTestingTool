@@ -68,12 +68,15 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DynamicProxy.cs" />
     <Compile Include="IBrokenLinkService.cs" />
     <Compile Include="BrokenLinkService.svc.cs">
       <DependentUpon>BrokenLinkService.svc</DependentUpon>
     </Compile>
+    <Compile Include="MyServiceClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SoapServiceClient.cs" />
+    <Compile Include="Utilities\ServiceResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
