@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Text;
+using WebTestingService.Utilities;
 
 namespace WebTestingService
 {
@@ -9,7 +10,7 @@ namespace WebTestingService
     public class SoapServiceClient
     {
         public string Url { get; set; }
-        public ServiceTypeEnum ServiceType { get; set; }
+        public LinkTypeEnum ServiceType { get; set; }
         public string ServiceMethod { get; set; }
         public List<MethodParameter> MethodParameters { get; set; }
         public string WCFContractName { get; set; }
@@ -83,7 +84,7 @@ namespace WebTestingService
             HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(Url);
 
             //add SOAPAction to header
-            if (ServiceType == ServiceTypeEnum.WCF)
+            if (ServiceType == LinkTypeEnum.WCFService)
                 webRequest.Headers.Add("SOAPAction", "\"http://tempuri.org/" + WCFContractName + "/" + ServiceMethod + "\"");
             else
                 webRequest.Headers.Add("SOAPAction", "\"http://tempuri.org/" + ServiceMethod + "\"");
@@ -97,11 +98,6 @@ namespace WebTestingService
         }
     }
 
-    public enum ServiceTypeEnum
-    {
-        Traditional,
-        WCF
-    }
 
     public class MethodParameter
     {

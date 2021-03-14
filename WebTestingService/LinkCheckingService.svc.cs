@@ -6,7 +6,7 @@ using System.Net;
 
 namespace WebTestingService
 {
-    public class BrokenLinkService : IBrokenLinkService
+    public class LinkCheckingService : ILinkCheckingService
     {
         public List<string> GetBorkenLinksFromUrl(string url)
         {
