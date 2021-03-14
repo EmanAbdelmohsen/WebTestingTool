@@ -19,7 +19,9 @@ namespace WebTestingService
 
                 //create SOAP envelope
             }
-
+            //traditional
+            //RESTfull
+            //web page
             else
             {
                 //get html document from given url
@@ -128,7 +130,8 @@ namespace WebTestingService
             return "";*/
 
             var ins = new MyServiceClient();
-            ins.Invoke("http://neptune.fulton.ad.asu.edu/WSRepository/Services/BasicThreeSvc/Service.svc?wsdl");
+            //ins.Invoke("http://neptune.fulton.ad.asu.edu/WSRepository/Services/BasicThreeSvc/Service.svc?wsdl");
+            ins.Invoke("http://neptune.fulton.ad.asu.edu/WSRepository/Services/EncryptionRest/Service.svc/Encrypt?text=Hello");
             return "";
         }
 

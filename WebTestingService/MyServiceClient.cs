@@ -21,7 +21,7 @@ namespace WebTestingService
             var client = new WebClient();
 
             //use the service url of the wsdl file
-            url = url.Contains("?wsdl") ? url : url + "?wsdl";
+            //url = url.Contains("?wsdl") ? url : url + "?wsdl";
 
             //Import WSDL
             WsdlImporter importer = ImportWSDL(new Uri(url));
@@ -47,6 +47,7 @@ namespace WebTestingService
                         {
                             //Find the endpoint of the service to which the proxy needs to contact
                             var svcEP = currentSvcEP.First(x => x.ListenUri.AbsoluteUri == url.Replace("?wsdl", ""));
+
                             //Generate proxy
                             var proxy = GetProxy("IService", svcEP, assembly);
 
@@ -62,7 +63,7 @@ namespace WebTestingService
                                 }*/
 
                                 //success service call
-                                return new ServiceResult(); //method.Invoke(service, args);
+                                return new ServiceResult();
                             }
 
                             return new ServiceResult(4, "Service invocation error. Service provided: " + "");
