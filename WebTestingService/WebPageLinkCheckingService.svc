@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="WebTestingService.WebPageLinkCheckingService" CodeBehind="WebPageLinkCheckingService.svc.cs" %>
