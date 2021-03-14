@@ -84,7 +84,7 @@ namespace WebTestingService
             HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(Url);
 
             //add SOAPAction to header
-            if (ServiceType == LinkTypeEnum.WCFService)
+            if (ServiceType == LinkTypeEnum.WCF_SOAP_Endpoint)
                 webRequest.Headers.Add("SOAPAction", "\"http://tempuri.org/" + WCFContractName + "/" + ServiceMethod + "\"");
             else
                 webRequest.Headers.Add("SOAPAction", "\"http://tempuri.org/" + ServiceMethod + "\"");
@@ -99,10 +99,5 @@ namespace WebTestingService
     }
 
 
-    public class MethodParameter
-    {
-        public string Name { get; set; }
-        public string Value { get; set; }
-    }
 
 }

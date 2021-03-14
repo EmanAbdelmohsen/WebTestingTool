@@ -65,19 +65,25 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LinkCheckingService.svc" />
+    <Content Include="SoapEndpointCheckingService.svc" />
     <Content Include="Web.config" />
     <Content Include="WebPageLinkCheckingService.svc" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DynamicProxy.cs" />
+    <Compile Include="WCFServiceUtilities\ServiceMethod.cs" />
+    <Compile Include="WCFServiceUtilities\DynamicProxy.cs" />
     <Compile Include="ILinkCheckingService.cs" />
+    <Compile Include="ISoapEndpointCheckingService.cs" />
     <Compile Include="IWebPageLinkCheckingService.cs" />
     <Compile Include="LinkCheckingService.svc.cs">
       <DependentUpon>LinkCheckingService.svc</DependentUpon>
     </Compile>
-    <Compile Include="MyServiceClient.cs" />
+    <Compile Include="WCFServiceUtilities\MyServiceClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SoapServiceClient.cs" />
+    <Compile Include="SoapEndpointCheckingService.svc.cs">
+      <DependentUpon>SoapEndpointCheckingService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="WCFServiceUtilities\SoapServiceClient.cs" />
     <Compile Include="Utilities\LinkTypeEnum.cs" />
     <Compile Include="Utilities\ServiceResult.cs" />
     <Compile Include="WebPageLinkCheckingService.svc.cs">

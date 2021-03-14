@@ -12,13 +12,6 @@ namespace WebTestingService.Utilities
             Succeeded = succeeded;
         }
 
-        public ServiceResult(bool succeeded, int errCode, string errMsg)
-        {
-            Succeeded = succeeded;
-            ErrorMessage = errMsg;
-            ErrorCode = errCode;
-        }
-
         public ServiceResult(int errCode, string errMsg)
         {
             Succeeded = false;
@@ -32,11 +25,6 @@ namespace WebTestingService.Utilities
         public T Data { get; }
 
         public ServiceResult(T data) : base()
-        {
-            Data = data;
-        }
-
-        public ServiceResult(bool succeeded, int errCode, string errMsg, T data) : base(succeeded, errCode, errMsg)
         {
             Data = data;
         }
