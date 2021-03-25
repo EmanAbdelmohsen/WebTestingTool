@@ -5,6 +5,8 @@ namespace WebTestingService
 {
     public class SoapEndpointCheckingService : ISoapEndpointCheckingService
     {
+        SoapServiceClient SoapServiceClient = new SoapServiceClient();
+
         public ServiceResult<List<string>> GetAllServiceContracts(string serviceUrl)
         {
             throw new System.NotImplementedException();

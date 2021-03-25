@@ -78,12 +78,12 @@
     <Compile Include="LinkCheckingService.svc.cs">
       <DependentUpon>LinkCheckingService.svc</DependentUpon>
     </Compile>
-    <Compile Include="WCFServiceUtilities\MyServiceClient.cs" />
+    <Compile Include="WCFServiceUtilities\SoapServiceClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SoapEndpointCheckingService.svc.cs">
       <DependentUpon>SoapEndpointCheckingService.svc</DependentUpon>
     </Compile>
-    <Compile Include="WCFServiceUtilities\SoapServiceClient.cs" />
+    <Compile Include="WCFServiceUtilities\DynamicServiceInvoker.cs" />
     <Compile Include="Utilities\LinkTypeEnum.cs" />
     <Compile Include="Utilities\ServiceResult.cs" />
     <Compile Include="WebPageLinkCheckingService.svc.cs">

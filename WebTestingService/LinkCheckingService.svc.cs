@@ -129,7 +129,7 @@ namespace WebTestingService
             s.Call(ser, new List<object>());
             return "";*/
 
-            var ins = new MyServiceClient();
+            var ins = new SoapServiceClient();
             //ins.Invoke("http://neptune.fulton.ad.asu.edu/WSRepository/Services/BasicThreeSvc/Service.svc?wsdl");
             ins.Invoke("http://neptune.fulton.ad.asu.edu/WSRepository/Services/EncryptionRest/Service.svc/Encrypt?text=Hello");
             return "";
