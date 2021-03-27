@@ -29,6 +29,8 @@ namespace WebTestingService.Utilities
             Data = data;
         }
 
+        public ServiceResult(int errCode, string errMsg) : base(errCode, errMsg) { }
+
         public ServiceResult(int errCode, string errMsg, T data) : base(errCode, errMsg)
         {
             Data = data;
