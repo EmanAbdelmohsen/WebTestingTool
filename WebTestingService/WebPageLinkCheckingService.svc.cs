@@ -83,9 +83,9 @@ namespace WebTestingService
                 return 404;
             }
 
-            HttpWebResponse response = null;
             HttpStatusCode statusCode;
 
+            HttpWebResponse response;
             try
             {
                 response = (HttpWebResponse)request.GetResponse();

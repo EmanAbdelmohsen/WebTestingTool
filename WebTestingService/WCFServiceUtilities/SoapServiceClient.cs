@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Reflection;
 using System.ServiceModel;
 using System.ServiceModel.Description;
@@ -16,14 +15,46 @@ namespace WebTestingService
     //reference: https://www.c-sharpcorner.com/UploadFile/yusufkaratoprak/dynamically-wcf-usage-in-client/
     public class SoapServiceClient
     {
-        public ServiceEndpoint ServiceEndpoint { get; }
+        public Dictionary<string, IEnumerable<ServiceEndpoint>> ServiceEndpoints { get; private set; }
 
-        public List<string> GetAllContracts(string url) { return new List<string>(); }
+        public ServiceResult<List<string>> GetAllContracts(string url)
+        {
+            //Import WSDL
+            WsdlImporter importer = ImportWSDL(new Uri(url));
+
+            if (importer != null)
+            {
+                //Extract Service and Data Contract Descriptions
+                Collection<ContractDescription> svcCtrDesc = importer.ImportAllContracts();
+
+                //Compile the description to assembly
+                CodeCompileUnit ccu = GetServiceAndDataContractCompileUnitFromWSDL(svcCtrDesc);
+                CompilerResults results = GenerateContractsAssemblyInMemory(new CodeCompileUnit[] { ccu });
+
+                if (!results.Errors.HasErrors)
+                {
+                    var assembly = results.CompiledAssembly;
+                    if (assembly != null)
+                    {
+                        //Extract all end points available on the WSDL
+                        ServiceEndpoints = GetEndPointsForServiceContracts(importer, svcCtrDesc);
+                        return new ServiceResult<List<string>>(ServiceEndpoints.Select(ep => ep.Key).ToList());
+                    }
+                    return new ServiceResult<List<string>>(4, "Service invocation error. No assembly available");
+                }
+                string errorMsg = "Compile Error Occurred calling web service. Compiler errors: " + results.Errors.Count + ".  ";
+                foreach (var error in results.Errors)
+                {
+                    errorMsg += "," + error.ToString();
+                }
+                return new ServiceResult<List<string>>(6, "Service invocation error. " + errorMsg);
+            }
+            return new ServiceResult<List<string>>(5, "Service invocation error. Invalid wsdl file path.");
+        }
+
         public List<ServiceMethod> GetAllMethods(string contractName) { return new List<ServiceMethod>(); }
         public ServiceResult Invoke(string url)
         {
-            var client = new WebClient();
-
             //use the service url of the wsdl file
             //url = url.Contains("?wsdl") ? url : url + "?wsdl";
 
@@ -89,7 +120,7 @@ namespace WebTestingService
             return new ServiceResult(1, "wsdl file unavailable");
         }
 
-        private WsdlImporter ImportWSDL(Uri wsdlLoc)
+        WsdlImporter ImportWSDL(Uri wsdlLoc)
         {
             MetadataExchangeClient mexC = new MetadataExchangeClient(wsdlLoc, MetadataExchangeClientMode.HttpGet)
             {
@@ -99,7 +130,7 @@ namespace WebTestingService
             return new WsdlImporter(metaSet);
         }
 
-        private Dictionary<string, IEnumerable<ServiceEndpoint>> GetEndPointsForServiceContracts(WsdlImporter imptr, Collection<ContractDescription> svcCtrDescs)
+        Dictionary<string, IEnumerable<ServiceEndpoint>> GetEndPointsForServiceContracts(WsdlImporter imptr, Collection<ContractDescription> svcCtrDescs)
         {
             ServiceEndpointCollection allEP = imptr.ImportAllEndpoints();
             var ctrEP = new Dictionary<string, IEnumerable<ServiceEndpoint>>();
@@ -111,7 +142,7 @@ namespace WebTestingService
             return ctrEP;
         }
 
-        private object GetProxy(string ctrName, ServiceEndpoint svcEP, Assembly assembly)
+        object GetProxy(string ctrName, ServiceEndpoint svcEP, Assembly assembly)
         {
             Type prxyT = assembly.GetTypes().First(t => t.IsClass && t.GetInterface(ctrName) != null && t.GetInterface(typeof(ICommunicationObject).Name) != null);
             object proxy = assembly.CreateInstance(prxyT.Name, false, BindingFlags.CreateInstance,
@@ -119,7 +150,7 @@ namespace WebTestingService
             return proxy;
         }
 
-        private CodeCompileUnit GetServiceAndDataContractCompileUnitFromWSDL(Collection<ContractDescription> svcCtrDescs)
+        CodeCompileUnit GetServiceAndDataContractCompileUnitFromWSDL(Collection<ContractDescription> svcCtrDescs)
         {
             ServiceContractGenerator svcCtrGen = new ServiceContractGenerator();
             foreach (ContractDescription ctrDesc in svcCtrDescs)
@@ -129,7 +160,7 @@ namespace WebTestingService
             return svcCtrGen.TargetCompileUnit;
         }
 
-        private CompilerResults GenerateContractsAssemblyInMemory(params CodeCompileUnit[] codeCompileUnits)
+        CompilerResults GenerateContractsAssemblyInMemory(params CodeCompileUnit[] codeCompileUnits)
         {
             // Generate a code file for the contracts 
             CodeGeneratorOptions opts = new CodeGeneratorOptions
